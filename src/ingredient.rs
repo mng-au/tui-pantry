@@ -13,7 +13,7 @@ pub struct PropInfo {
 /// Each ingredient represents one "story" — a specific configuration
 /// of a widget with mock data. Ingredients are grouped by widget name
 /// in the navigation tree.
-pub trait Ingredient: Send + Sync {
+pub trait Ingredient: Send {
     /// Top-level tab this ingredient belongs to (e.g., "Widgets", "Views", "Styles").
     fn tab(&self) -> &str {
         "Widgets"
