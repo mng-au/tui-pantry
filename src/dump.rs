@@ -120,12 +120,14 @@ pub(crate) fn dump(ingredients: &mut [Box<dyn Ingredient>], args: &DumpArgs) -> 
     let stdout = io::stdout();
     let mut out = stdout.lock();
 
+    let has_multiple_matches = matches.len() > 1;
+
     for (i, ingredient) in matches.iter_mut().enumerate() {
         if i > 0 {
             writeln!(out)?;
         }
 
-        if matches.len() > 1 {
+        if has_multiple_matches {
             writeln!(out, "--- {} ---", ingredient.name())?;
         }
 
