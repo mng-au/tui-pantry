@@ -11,7 +11,7 @@ use crate::theme::PantryTheme;
 /// Chrome wrapper that renders a titled border around an ingredient.
 pub struct Pane<'a> {
     title: &'a str,
-    ingredient: &'a dyn Ingredient,
+    ingredient: &'a mut dyn Ingredient,
     focused: bool,
     theme: &'a PantryTheme,
 }
@@ -19,7 +19,7 @@ pub struct Pane<'a> {
 impl<'a> Pane<'a> {
     pub fn new(
         title: &'a str,
-        ingredient: &'a dyn Ingredient,
+        ingredient: &'a mut dyn Ingredient,
         focused: bool,
         theme: &'a PantryTheme,
     ) -> Self {
@@ -33,7 +33,7 @@ impl<'a> Pane<'a> {
 }
 
 impl Widget for Pane<'_> {
-    fn render(self, area: Rect, buf: &mut Buffer) {
+    fn render(mut self, area: Rect, buf: &mut Buffer) {
         let border_color = if self.focused {
             self.theme.accent
         } else {

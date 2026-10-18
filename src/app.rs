@@ -126,7 +126,7 @@ impl App {
                 let depth = self.color_depth;
                 terminal.draw(|frame| {
                     let draw_regions = ui::Regions::from_terminal(frame.area());
-                    ui::render(&self, frame.area(), frame.buffer_mut(), &draw_regions);
+                    ui::render(&mut self, frame.area(), frame.buffer_mut(), &draw_regions);
                     if depth != ColorDepth::TrueColor {
                         quantize_buffer(frame.buffer_mut(), depth);
                     }

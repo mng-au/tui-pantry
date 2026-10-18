@@ -509,7 +509,7 @@ impl Ingredient for ColorGroupIngredient {
         &self.source
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         match self.mode {
             SwatchMode::Named => render_named_swatches(&self.entries, area, buf),
             SwatchMode::Scale => render_scale_swatches(&self.entries, area, buf),
@@ -531,7 +531,7 @@ impl Ingredient for ContentIngredient {
         &self.source
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_content(&self.levels, area, buf);
     }
 }

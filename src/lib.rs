@@ -81,7 +81,7 @@ pub fn run(ingredients: Vec<Box<dyn Ingredient>>, manifest_dir: &str) -> io::Res
     if let Some(action) = dump::parse_headless_args() {
         return match action {
             dump::HeadlessAction::List => dump::list(&all),
-            dump::HeadlessAction::Dump(args) => dump::dump(&all, &args),
+            dump::HeadlessAction::Dump(args) => dump::dump(&mut all, &args),
         };
     }
 

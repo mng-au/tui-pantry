@@ -89,16 +89,16 @@ pub(crate) fn list(ingredients: &[Box<dyn Ingredient>]) -> io::Result<()> {
 // Dump
 // ---------------------------------------------------------------------------
 
-pub(crate) fn dump(ingredients: &[Box<dyn Ingredient>], args: &DumpArgs) -> io::Result<()> {
-    let matches: Vec<&dyn Ingredient> = ingredients
-        .iter()
-        .map(AsRef::as_ref)
+pub(crate) fn dump(ingredients: &mut [Box<dyn Ingredient>], args: &DumpArgs) -> io::Result<()> {
+    let mut matches: Vec<&mut dyn Ingredient> = ingredients
+        .iter_mut()
         .filter(|ing| ing.group() == args.group)
         .filter(|ing| {
             args.variant
                 .as_ref()
                 .is_none_or(|v| ing.name() == v.as_str())
         })
+        .map(|ing| -> &mut dyn Ingredient { ing.as_mut() })
         .collect();
 
     if matches.is_empty() {
@@ -120,7 +120,7 @@ pub(crate) fn dump(ingredients: &[Box<dyn Ingredient>], args: &DumpArgs) -> io::
     let stdout = io::stdout();
     let mut out = stdout.lock();
 
-    for (i, ingredient) in matches.iter().enumerate() {
+    for (i, ingredient) in matches.iter_mut().enumerate() {
         if i > 0 {
             writeln!(out)?;
         }
@@ -136,7 +136,7 @@ pub(crate) fn dump(ingredients: &[Box<dyn Ingredient>], args: &DumpArgs) -> io::
     Ok(())
 }
 
-fn render_to_ansi(ingredient: &dyn Ingredient, width: u16, height: u16) -> String {
+fn render_to_ansi(ingredient: &mut dyn Ingredient, width: u16, height: u16) -> String {
     let area = Rect::new(0, 0, width, height);
     let mut buf = Buffer::empty(area);
     ingredient.render(area, &mut buf);

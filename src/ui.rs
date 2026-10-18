@@ -86,7 +86,7 @@ impl Regions {
     }
 }
 
-pub(crate) fn render(app: &App, area: Rect, buf: &mut Buffer, regions: &Regions) {
+pub(crate) fn render(app: &mut App, area: Rect, buf: &mut Buffer, regions: &Regions) {
     let theme = app.theme();
 
     if app.focus == Focus::Fullscreen {
@@ -378,7 +378,7 @@ fn render_sidebar(app: &App, theme: &PantryTheme, area: Rect, buf: &mut Buffer) 
     }
 }
 
-fn render_preview(app: &App, theme: &PantryTheme, area: Rect, focused: bool, buf: &mut Buffer) {
+fn render_preview(app: &mut App, theme: &PantryTheme, area: Rect, focused: bool, buf: &mut Buffer) {
     let preview_bg = app.preview_bg();
     let bg_color = preview_bg.map_or(theme.panel_bg, |(_, c)| c);
     let bg_label = preview_bg.map(|(name, _)| name);
@@ -460,11 +460,11 @@ fn render_single_ingredient(
         let [canvas, doc_area] =
             Layout::vertical([Constraint::Min(3), Constraint::Length(clamped)]).areas(body);
 
-        let pane = Pane::new(ingredient.name(), ingredient.as_ref(), focused, theme);
+        let pane = Pane::new(ingredient.name(), ingredient.as_mut(), focused, theme);
         pane.render(canvas, buf);
         render_doc_panel(theme, description, props, doc_area, buf);
     } else {
-        let pane = Pane::new(ingredient.name(), ingredient.as_ref(), focused, theme);
+        let pane = Pane::new(ingredient.name(), ingredient.as_mut(), focused, theme);
         pane.render(body, buf);
     }
 }
@@ -474,7 +474,7 @@ const GALLERY_MARGIN: u16 = 1;
 
 /// Render all variants of a widget vertically with scroll.
 fn render_gallery(
-    app: &App,
+    app: &mut App,
     theme: &PantryTheme,
     area: Rect,
     widget_name: &str,
@@ -533,7 +533,7 @@ fn render_gallery(
             break;
         }
 
-        let ingredient = &app.ingredients[idx];
+        let ingredient = &mut app.ingredients[idx];
 
         let visible_top = (render_y.max(body.y as i32)) as u16;
         let visible_bot =
@@ -553,7 +553,7 @@ fn render_gallery(
 
         // Pane borders require the full item height; partial items get a plain label.
         if render_y >= body.y as i32 && visible_height >= GALLERY_ITEM_HEIGHT {
-            Pane::new(ingredient.name(), ingredient.as_ref(), false, theme).render(item_area, buf);
+            Pane::new(ingredient.name(), ingredient.as_mut(), false, theme).render(item_area, buf);
         } else {
             let label = Line::styled(
                 format!(" {} ", ingredient.name()),

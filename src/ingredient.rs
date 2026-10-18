@@ -45,7 +45,7 @@ pub trait Ingredient: Send {
     }
 
     /// Render this ingredient's widget into the given area.
-    fn render(&self, area: Rect, buf: &mut ratatui::buffer::Buffer);
+    fn render(&mut self, area: Rect, buf: &mut ratatui::buffer::Buffer);
 
     /// Whether this ingredient needs periodic redraws (e.g. animations).
     fn animated(&self) -> bool {
