@@ -5,6 +5,7 @@ use ratatui::style::Color;
 /// Two built-in modes — `dark` (default) and `light` — with optional
 /// per-field overrides from `[pantry.dark]` / `[pantry.light]` in
 /// `pantry.toml`.
+#[derive(Clone, Copy)]
 pub struct PantryTheme {
     pub accent: Color,
     pub panel_bg: Color,

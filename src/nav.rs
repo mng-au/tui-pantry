@@ -439,7 +439,7 @@ mod tests {
         fn source(&self) -> &str {
             ""
         }
-        fn render(&self, _area: Rect, _buf: &mut Buffer) {}
+        fn render(&mut self, _area: Rect, _buf: &mut Buffer) {}
     }
 
     fn boxed(s: Stub) -> Box<dyn Ingredient> {

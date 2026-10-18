@@ -87,7 +87,7 @@ impl Regions {
 }
 
 pub(crate) fn render(app: &mut App, area: Rect, buf: &mut Buffer, regions: &Regions) {
-    let theme = app.theme();
+    let theme = *app.theme();
 
     if app.focus == Focus::Fullscreen {
         if let Some(idx) = app.nav().selected_ingredient() {
@@ -105,10 +105,10 @@ pub(crate) fn render(app: &mut App, area: Rect, buf: &mut Buffer, regions: &Regi
 
     let focused = app.focus == Focus::Preview;
 
-    render_top_bar(app, theme, regions.top_bar, buf);
-    render_sidebar(app, theme, regions.sidebar, buf);
-    render_preview(app, theme, regions.preview, focused, buf);
-    render_bottom_bar(app, theme, regions.bottom_bar, buf);
+    render_top_bar(app, &theme, regions.top_bar, buf);
+    render_sidebar(app, &theme, regions.sidebar, buf);
+    render_preview(app, &theme, regions.preview, focused, buf);
+    render_bottom_bar(app, &theme, regions.bottom_bar, buf);
 }
 
 fn render_top_bar(app: &App, theme: &PantryTheme, area: Rect, buf: &mut Buffer) {
@@ -381,7 +381,7 @@ fn render_sidebar(app: &App, theme: &PantryTheme, area: Rect, buf: &mut Buffer) 
 fn render_preview(app: &mut App, theme: &PantryTheme, area: Rect, focused: bool, buf: &mut Buffer) {
     let preview_bg = app.preview_bg();
     let bg_color = preview_bg.map_or(theme.panel_bg, |(_, c)| c);
-    let bg_label = preview_bg.map(|(name, _)| name);
+    let bg_label = preview_bg.map(|(name, _)| name.to_string());
 
     // Fill preview area with the selected background.
     if preview_bg.is_some() {
@@ -389,9 +389,11 @@ fn render_preview(app: &mut App, theme: &PantryTheme, area: Rect, focused: bool,
     }
 
     if let Some(idx) = app.nav().selected_ingredient() {
-        render_single_ingredient(app, theme, area, focused, idx, bg_label, buf);
+        render_single_ingredient(app, theme, area, focused, idx, bg_label.as_deref(), buf);
     } else if let Some((widget_name, items)) = app.nav().selected_widget_items() {
-        render_gallery(app, theme, area, widget_name, items, bg_label, buf);
+        let widget_name = widget_name.to_string();
+        let items = items.to_vec();
+        render_gallery(app, theme, area, &widget_name, &items, bg_label.as_deref(), buf);
     } else if app.nav().is_empty() && TAB_LABELS[app.active_tab] == "Styles" {
         render_stylesheet_prompt(theme, area, buf);
     } else {
@@ -411,7 +413,7 @@ fn fill_bg_area(buf: &mut Buffer, area: Rect, color: Color) {
 }
 
 fn render_single_ingredient(
-    app: &App,
+    app: &mut App,
     theme: &PantryTheme,
     area: Rect,
     focused: bool,
@@ -419,15 +421,48 @@ fn render_single_ingredient(
     bg_label: Option<&str>,
     buf: &mut Buffer,
 ) {
-    let ingredient = &app.ingredients[idx];
-
-    let description = ingredient.description();
-    let props = ingredient.props();
-    let doc_height = doc_panel_height(description, props);
+    let doc_height = get_doc_height(app, idx);
 
     let [header_area, body] =
         Layout::vertical([Constraint::Length(1), Constraint::Min(0)]).areas(area);
 
+    render_ingredient_handler(app, theme, header_area, idx, bg_label, buf);
+
+    if doc_height > 0 {
+        let max_doc = (body.height * 2 / 5).max(4);
+        let clamped = doc_height.min(max_doc);
+
+        let [canvas, doc_area] =
+            Layout::vertical([Constraint::Min(3), Constraint::Length(clamped)]).areas(body);
+
+        render_doc_panel(
+            app,
+            idx,
+            theme,
+            doc_area,
+            buf,
+        );
+
+        let name = app.ingredients[idx].name().to_string();
+        let pane = Pane::new(&name, app.ingredients[idx].as_mut(), focused, theme);
+        pane.render(canvas, buf);
+    } else {
+        let name = app.ingredients[idx].name().to_string();
+        let pane = Pane::new(&name, app.ingredients[idx].as_mut(), focused, theme);
+        pane.render(body, buf);
+    }
+}
+
+fn get_doc_height(app: &mut App, idx: usize) -> u16 {
+    let doc_height = {
+        let ingredient = &app.ingredients[idx];
+        doc_panel_height(ingredient.description(), ingredient.props())
+    };
+    doc_height
+}
+
+fn render_ingredient_handler(app: &mut App, theme: &PantryTheme, header_area: Rect, idx: usize, bg_label: Option<&str>, buf: &mut Buffer) {
+    let ingredient = &app.ingredients[idx];
     let mut spans = vec![
         Span::styled(
             format!(" {} ", ingredient.group()),
@@ -452,21 +487,6 @@ fn render_single_ingredient(
         &Line::from(spans),
         header_area.width,
     );
-
-    if doc_height > 0 {
-        let max_doc = (body.height * 2 / 5).max(4);
-        let clamped = doc_height.min(max_doc);
-
-        let [canvas, doc_area] =
-            Layout::vertical([Constraint::Min(3), Constraint::Length(clamped)]).areas(body);
-
-        let pane = Pane::new(ingredient.name(), ingredient.as_mut(), focused, theme);
-        pane.render(canvas, buf);
-        render_doc_panel(theme, description, props, doc_area, buf);
-    } else {
-        let pane = Pane::new(ingredient.name(), ingredient.as_mut(), focused, theme);
-        pane.render(body, buf);
-    }
 }
 
 const GALLERY_ITEM_HEIGHT: u16 = 14;
@@ -553,7 +573,8 @@ fn render_gallery(
 
         // Pane borders require the full item height; partial items get a plain label.
         if render_y >= body.y as i32 && visible_height >= GALLERY_ITEM_HEIGHT {
-            Pane::new(ingredient.name(), ingredient.as_mut(), false, theme).render(item_area, buf);
+            let name = ingredient.name().to_string();
+            Pane::new(&name, ingredient.as_mut(), false, theme).render(item_area, buf);
         } else {
             let label = Line::styled(
                 format!(" {} ", ingredient.name()),
@@ -597,12 +618,16 @@ fn doc_panel_height(description: &str, props: &[PropInfo]) -> u16 {
 }
 
 fn render_doc_panel(
+    app: &mut App,
+    idx: usize,
     theme: &PantryTheme,
-    description: &str,
-    props: &[PropInfo],
     area: Rect,
     buf: &mut Buffer,
 ) {
+    let ingredient = &mut app.ingredients[idx];
+    let description = ingredient.description();
+    let props = ingredient.props();
+
     if area.is_empty() {
         return;
     }
