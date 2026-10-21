@@ -14,6 +14,7 @@ use crate::Ingredient;
 use crate::color_depth::{ColorDepth, quantize_buffer};
 use crate::nav::NavTree;
 use crate::theme::{PantryTheme, PreviewBackgrounds, ThemePair};
+use crate::initial_view::InitialView;
 use crate::ui;
 
 pub(crate) const TAB_LABELS: &[&str] = &["Widgets", "Panes", "Views", "Styles"];
@@ -59,8 +60,9 @@ impl App {
         ingredients: Vec<Box<dyn Ingredient>>,
         themes: ThemePair,
         preview_backgrounds: PreviewBackgrounds,
+        initial_view: InitialView,
     ) -> Self {
-        let navs: Vec<NavTree> = TAB_LABELS
+        let mut navs: Vec<NavTree> = TAB_LABELS
             .iter()
             .map(|tab| NavTree::build(&ingredients, tab))
             .collect();
@@ -73,13 +75,27 @@ impl App {
             Some(0)
         };
 
+        let active_tab = initial_view
+            .start_tab
+            .as_deref()
+            .and_then(|tab| TAB_LABELS.iter().position(|t| t.eq_ignore_ascii_case(tab)))
+            .unwrap_or(0);
+
+        if let (Some(widget), Some(nav)) = (&initial_view.start_widget, navs.get_mut(active_tab)) {
+            nav.select_by_group_and_variant(
+                widget,
+                initial_view.start_variant.as_deref(),
+                &ingredients,
+            );
+        }
+
         Self {
             ingredients,
             themes,
             dark_mode,
             preview_backgrounds,
             preview_bg_index,
-            active_tab: 0,
+            active_tab,
             navs,
             focus: Focus::Sidebar,
             color_depth: ColorDepth::default(),

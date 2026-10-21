@@ -227,6 +227,53 @@ impl NavTree {
         self.cursor = index.min(max);
     }
 
+    pub fn select_by_group_and_variant(
+        &mut self,
+        widget: &str,
+        variant: Option<&str>,
+        ingredients: &[Box<dyn Ingredient>],
+    ) {
+        let Some(wi) = self
+            .widgets
+            .iter()
+            .position(|w| w.eq_ignore_ascii_case(widget))
+        else {
+            return;
+        };
+
+        if !self.widget_expanded[wi] {
+            self.widget_expanded[wi] = true;
+        }
+
+        let items = self.widget_items[wi].clone();
+        let Some(&first) = items.first() else {
+            return;
+        };
+
+        let target = variant
+            .and_then(|v| {
+                items
+                    .iter()
+                    .copied()
+                    .find(|&idx| ingredients[idx].name().eq_ignore_ascii_case(v))
+            })
+            .or_else(|| items.first().copied())
+            .unwrap_or(first);
+
+        let entries = self.visible();
+        if let Some(pos) = entries
+            .iter()
+            .position(|e| {
+                matches!(
+                    e,
+                    NavEntry::Variant { ingredient_idx, .. } if *ingredient_idx == target
+                )
+            })
+        {
+            self.cursor = pos;
+        }
+    }
+
     /// Toggle expand/collapse if cursor is on a section or widget.
     pub fn toggle_or_enter(&mut self) {
         let entries = self.visible();
