@@ -3,6 +3,7 @@ mod color_depth;
 mod dump;
 mod ingredient;
 pub mod layout;
+mod initial_view;
 mod nav;
 mod pane;
 pub mod stylesheet;
@@ -61,19 +62,21 @@ pub fn run(ingredients: Vec<Box<dyn Ingredient>>, manifest_dir: &str) -> io::Res
 
     let styles_content = std::fs::read_to_string(base.join("pantry.toml"));
 
-    let (mut all, themes, preview_backgrounds) = match styles_content {
+    let (mut all, themes, preview_backgrounds, initial_view) = match styles_content {
         Ok(ref content) => {
             let table: toml::Table = content.parse().expect("pantry.toml: invalid TOML");
             (
                 stylesheet::from_toml(content),
                 theme::ThemePair::from_toml(&table),
                 theme::PreviewBackgrounds::from_toml(&table),
+                initial_view::InitialView::from_toml(&table),
             )
         }
         Err(_) => (
             Vec::new(),
             theme::ThemePair::default(),
             theme::PreviewBackgrounds::default(),
+            initial_view::InitialView::default(),
         ),
     };
     all.extend(ingredients);
@@ -90,7 +93,7 @@ pub fn run(ingredients: Vec<Box<dyn Ingredient>>, manifest_dir: &str) -> io::Res
         std::io::stdout(),
         ratatui::crossterm::event::EnableMouseCapture
     )?;
-    let result = app::App::new(all, themes, preview_backgrounds).run(terminal);
+    let result = app::App::new(all, themes, preview_backgrounds, initial_view).run(terminal);
     let _ = ratatui::crossterm::execute!(
         std::io::stdout(),
         ratatui::crossterm::event::DisableMouseCapture
