@@ -9,6 +9,7 @@ use ratatui::{
         StatefulWidget, Widget, Wrap,
     },
 };
+use ratatui::crossterm::event::KeyEvent;
 use tui_pantry::Ingredient;
 
 use crate::styles::MOCHA;
@@ -97,9 +98,9 @@ impl Ingredient for ScrollbarVertical {
             .render(area.inner(Margin::new(0, 1)), buf, &mut scrollbar_state);
     }
 
-    fn handle_key(&mut self, code: KeyCode) -> bool {
+    fn handle_key(&mut self, ev: KeyEvent) -> bool {
         let max = SAMPLE_TEXT.len().saturating_sub(1);
-        match code {
+        match ev.code {
             KeyCode::Up | KeyCode::Char('k') => {
                 self.position = self.position.saturating_sub(1);
                 true
@@ -168,8 +169,8 @@ impl Ingredient for ScrollbarHorizontal {
             .render(area.inner(Margin::new(1, 0)), buf, &mut scrollbar_state);
     }
 
-    fn handle_key(&mut self, code: KeyCode) -> bool {
-        match code {
+    fn handle_key(&mut self, ev: KeyEvent) -> bool {
+        match ev.code {
             KeyCode::Left | KeyCode::Char('h') => {
                 self.position = self.position.saturating_sub(2);
                 true

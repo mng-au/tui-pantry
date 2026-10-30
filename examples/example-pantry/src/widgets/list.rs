@@ -7,6 +7,7 @@ use ratatui::{
         Block, HighlightSpacing, List as RatatuiList, ListItem, ListState, StatefulWidget, Widget,
     },
 };
+use ratatui::crossterm::event::KeyEvent;
 use tui_pantry::Ingredient;
 
 use crate::styles::MOCHA;
@@ -97,9 +98,9 @@ impl Ingredient for ListDefault {
         StatefulWidget::render(list, area, buf, &mut state);
     }
 
-    fn handle_key(&mut self, code: KeyCode) -> bool {
+    fn handle_key(&mut self, ev: KeyEvent) -> bool {
         let len = self.items.len();
-        match code {
+        match ev.code {
             KeyCode::Up | KeyCode::Char('k') => {
                 let i = self.state.selected().unwrap_or(0);
                 self.state

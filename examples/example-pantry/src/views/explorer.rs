@@ -10,6 +10,7 @@ use ratatui::{
         canvas::{Canvas, Circle, Map, MapResolution},
     },
 };
+use ratatui::crossterm::event::KeyEvent;
 use tui_pantry::Ingredient;
 
 use crate::styles::{MOCHA, palette::accent};
@@ -158,9 +159,9 @@ impl Ingredient for ExplorerDefault {
             .render(log_col.inner(Margin::new(0, 1)), buf, &mut scrollbar_state);
     }
 
-    fn handle_key(&mut self, code: KeyCode) -> bool {
+    fn handle_key(&mut self, ev: KeyEvent) -> bool {
         let max = LOG_LINES.len().saturating_sub(1);
-        match code {
+        match ev.code {
             KeyCode::Up | KeyCode::Char('k') => {
                 self.scroll_position = self.scroll_position.saturating_sub(1);
                 true

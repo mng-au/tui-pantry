@@ -6,6 +6,7 @@ use ratatui::{
     text::{Line, Span},
     widgets::Widget,
 };
+use ratatui::crossterm::event::KeyEvent;
 use tui_pantry::{Ingredient, PropInfo};
 
 use crate::styles::MOCHA;
@@ -238,9 +239,9 @@ impl Ingredient for LogStreamDefault {
         }
     }
 
-    fn handle_key(&mut self, code: KeyCode) -> bool {
+    fn handle_key(&mut self, ev: KeyEvent) -> bool {
         let max = ENTRIES.len().saturating_sub(1);
-        match code {
+        match ev.code {
             KeyCode::Up | KeyCode::Char('k') => {
                 self.scroll = self.scroll.saturating_sub(1);
                 true

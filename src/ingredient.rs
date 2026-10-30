@@ -1,4 +1,4 @@
-use ratatui::crossterm::event::{KeyCode, MouseEvent, MouseEventKind};
+use ratatui::crossterm::event::{KeyEvent, MouseEvent, MouseEventKind};
 use ratatui::layout::Rect;
 
 /// Describes a single configurable property of a widget.
@@ -59,7 +59,7 @@ pub trait Ingredient: Send {
 
     /// Handle a key press while the preview pane is focused.
     /// Returns true if the key was consumed.
-    fn handle_key(&mut self, _code: KeyCode) -> bool {
+    fn handle_key(&mut self, _ev: KeyEvent) -> bool {
         false
     }
 

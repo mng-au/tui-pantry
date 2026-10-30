@@ -9,7 +9,7 @@ use ratatui::{
     layout::{Position, Rect},
     style::Color,
 };
-
+use ratatui::crossterm::event::KeyEvent;
 use crate::Ingredient;
 use crate::color_depth::{ColorDepth, quantize_buffer};
 use crate::nav::NavTree;
@@ -159,8 +159,8 @@ impl App {
 
             if has_event {
                 match event::read()? {
-                    Event::Key(key) if key.kind == KeyEventKind::Press => {
-                        self.handle_key(key.code, key.modifiers);
+                    Event::Key(ev) if ev.kind == KeyEventKind::Press => {
+                        self.handle_key(ev, ev.modifiers);
                         dirty = true;
                     }
                     Event::Mouse(mouse) => {
@@ -184,11 +184,11 @@ impl App {
             .is_some_and(|idx| self.ingredients[idx].animated())
     }
 
-    fn handle_key(&mut self, code: KeyCode, modifiers: KeyModifiers) {
+    fn handle_key(&mut self, ev: KeyEvent, modifiers: KeyModifiers) {
         match self.focus {
-            Focus::Sidebar => self.handle_sidebar_key(code, modifiers),
-            Focus::Preview => self.handle_preview_key(code),
-            Focus::Fullscreen => self.handle_fullscreen_key(code),
+            Focus::Sidebar => self.handle_sidebar_key(ev.code, modifiers),
+            Focus::Preview => self.handle_preview_key(ev),
+            Focus::Fullscreen => self.handle_fullscreen_key(ev),
         }
     }
 
@@ -231,8 +231,8 @@ impl App {
         }
     }
 
-    fn handle_preview_key(&mut self, code: KeyCode) {
-        match code {
+    fn handle_preview_key(&mut self, ev: KeyEvent) {
+        match ev.code {
             KeyCode::Esc => {
                 self.focus = Focus::Sidebar;
                 return;
@@ -245,18 +245,18 @@ impl App {
         }
 
         if let Some(idx) = self.nav().selected_ingredient() {
-            self.ingredients[idx].handle_key(code);
+            self.ingredients[idx].handle_key(ev);
         }
     }
 
-    fn handle_fullscreen_key(&mut self, code: KeyCode) {
-        if matches!(code, KeyCode::Esc | KeyCode::Char('f')) {
+    fn handle_fullscreen_key(&mut self, ev: KeyEvent) {
+        if matches!(ev.code, KeyCode::Esc | KeyCode::Char('f')) {
             self.focus = Focus::Sidebar;
             return;
         }
 
         if let Some(idx) = self.nav().selected_ingredient() {
-            self.ingredients[idx].handle_key(code);
+            self.ingredients[idx].handle_key(ev);
         }
     }
 

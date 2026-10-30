@@ -5,6 +5,7 @@ use ratatui::{
     style::{Modifier, Style},
     widgets::{Block, Cell, Row, StatefulWidget, Table as RatatuiTable, TableState},
 };
+use ratatui::crossterm::event::KeyEvent;
 use tui_pantry::{Ingredient, PropInfo};
 
 use crate::styles::MOCHA;
@@ -201,9 +202,9 @@ impl Ingredient for TableDefault {
         StatefulWidget::render(table, area, buf, &mut state);
     }
 
-    fn handle_key(&mut self, code: KeyCode) -> bool {
+    fn handle_key(&mut self, ev: KeyEvent) -> bool {
         let len = self.rows.len();
-        match code {
+        match ev.code {
             KeyCode::Up | KeyCode::Char('k') => {
                 let i = self.state.selected().unwrap_or(0);
                 self.state

@@ -7,6 +7,7 @@ use ratatui::{
         BarChart, Block, Cell, Gauge, Row, Sparkline, StatefulWidget, Table, TableState, Widget,
     },
 };
+use ratatui::crossterm::event::KeyEvent;
 use tui_pantry::Ingredient;
 
 use crate::styles::{MOCHA, palette::accent};
@@ -274,9 +275,9 @@ impl Ingredient for DashboardDefault {
         render_table(&self.services, &mut state, table_row, buf);
     }
 
-    fn handle_key(&mut self, code: KeyCode) -> bool {
+    fn handle_key(&mut self, ev: KeyEvent) -> bool {
         let len = self.services.len();
-        match code {
+        match ev.code {
             KeyCode::Up | KeyCode::Char('k') => {
                 let i = self.state.selected().unwrap_or(0);
                 self.state
