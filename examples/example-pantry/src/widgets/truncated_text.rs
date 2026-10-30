@@ -71,7 +71,7 @@ impl Ingredient for TruncatedSingleLine {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         if area.height == 0 {
             return;
         }
@@ -112,7 +112,7 @@ impl Ingredient for TruncatedMultiLine {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let width = area.width as usize;
         for (i, line) in LINES.iter().enumerate() {
             let y = area.y + (i as u16) * 2;

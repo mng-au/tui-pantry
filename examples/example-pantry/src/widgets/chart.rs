@@ -62,7 +62,7 @@ impl Ingredient for ChartLine {
         "ratatui::widgets::Chart"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let datasets = vec![
             Dataset::default()
                 .name("user")
@@ -152,7 +152,7 @@ impl Ingredient for ChartScatter {
         "ratatui::widgets::Chart"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let datasets = vec![
             Dataset::default()
                 .name("series A")

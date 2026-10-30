@@ -34,7 +34,7 @@ impl Ingredient for ActivityFeedDefault {
         "example_pantry::panes::activity_feed"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_centered(
             FeedWidget,
             Some(Constraint::Max(80)),

@@ -70,7 +70,7 @@ impl Ingredient for LineGaugeLow {
         "ratatui::widgets::LineGauge"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_line_gauge("Bandwidth", 0.34, area, buf);
     }
 }
@@ -94,7 +94,7 @@ impl Ingredient for LineGaugeMedium {
         "ratatui::widgets::LineGauge"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_line_gauge("Bandwidth", 0.74, area, buf);
     }
 }
@@ -118,7 +118,7 @@ impl Ingredient for LineGaugeHigh {
         "ratatui::widgets::LineGauge"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_line_gauge("Bandwidth", 0.92, area, buf);
     }
 }

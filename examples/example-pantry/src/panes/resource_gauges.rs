@@ -80,7 +80,7 @@ impl Ingredient for ResourceGaugesHealthy {
         "example_pantry::panes::resource_gauges"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_centered(
             GaugeStrip(HEALTHY),
             Some(Constraint::Max(60)),
@@ -124,7 +124,7 @@ impl Ingredient for ResourceGaugesStressed {
         "example_pantry::panes::resource_gauges"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_centered(
             GaugeStrip(STRESSED),
             Some(Constraint::Max(60)),

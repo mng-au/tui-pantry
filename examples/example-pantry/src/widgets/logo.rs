@@ -32,7 +32,7 @@ impl Ingredient for LogoSmall {
         "ratatui::widgets::RatatuiLogo"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_centered(
             RatatuiLogo::new(RatatuiLogoSize::Small),
             Some(Constraint::Length(32)),
@@ -62,7 +62,7 @@ impl Ingredient for LogoTiny {
         "ratatui::widgets::RatatuiLogo"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_centered(
             RatatuiLogo::new(RatatuiLogoSize::Tiny),
             Some(Constraint::Length(16)),
@@ -92,7 +92,7 @@ impl Ingredient for Mascot {
         "ratatui::widgets::RatatuiMascot"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_centered(
             RatatuiMascot::default(),
             Some(Constraint::Length(32)),

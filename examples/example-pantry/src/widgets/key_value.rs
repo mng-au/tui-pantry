@@ -106,7 +106,7 @@ impl Ingredient for KeyValueDefault {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_entries(SAMPLE_ENTRIES, 2, area, buf);
     }
 }
@@ -136,7 +136,7 @@ impl Ingredient for KeyValueDense {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_entries(SAMPLE_ENTRIES, 1, area, buf);
     }
 }

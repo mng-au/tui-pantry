@@ -68,7 +68,7 @@ impl Ingredient for ListDefault {
         true
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let items: Vec<ListItem> = self
             .items
             .iter()
@@ -136,7 +136,7 @@ impl Ingredient for ListEmpty {
         "ratatui::widgets::List"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let list = RatatuiList::new(Vec::<ListItem>::new())
             .block(
                 Block::bordered()

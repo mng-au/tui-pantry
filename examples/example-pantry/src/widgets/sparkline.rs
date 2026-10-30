@@ -61,7 +61,7 @@ impl Ingredient for SparklineDefault {
         "ratatui::widgets::Sparkline"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let data = [
             4, 7, 3, 8, 6, 9, 2, 5, 8, 3, 7, 4, 6, 9, 5, 3, 7, 8, 2, 6, 4, 9, 5, 7, 3, 6, 8, 4, 7,
             5, 3, 9, 6, 4, 8, 7, 2, 5, 9, 3, 7, 4, 6, 8, 5, 3, 7, 9, 2, 6, 4, 8, 5, 7, 3, 6, 9, 4,
@@ -91,7 +91,7 @@ impl Ingredient for SparklineSparse {
         "ratatui::widgets::Sparkline"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let data = [
             0, 0, 1, 0, 3, 0, 0, 2, 0, 0, 0, 5, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 0, 3,
             0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 4, 0, 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0,

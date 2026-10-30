@@ -35,7 +35,7 @@ impl Ingredient for BarChartDefault {
         "ratatui::widgets::BarChart"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let data = [
             ("us-east", 42),
             ("us-west", 38),
@@ -81,7 +81,7 @@ impl Ingredient for BarChartHighLoad {
         "ratatui::widgets::BarChart"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let data = [
             ("us-east", 89),
             ("us-west", 92),

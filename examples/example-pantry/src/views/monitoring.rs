@@ -105,7 +105,7 @@ impl Ingredient for MonitoringDefault {
         "example_pantry::views::monitoring"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let cols = Layout::horizontal(vec![Constraint::Ratio(1, 4); 4]).split(area);
 
         for (metric, col) in HEALTHY_METRICS.iter().zip(cols.iter()) {
@@ -171,7 +171,7 @@ impl Ingredient for MonitoringAlert {
         "example_pantry::views::monitoring"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let cols = Layout::horizontal(vec![Constraint::Ratio(1, 4); 4]).split(area);
 
         for (metric, col) in ALERT_METRICS.iter().zip(cols.iter()) {

@@ -136,7 +136,7 @@ impl Ingredient for EmptyStateNoData {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_centered(
             EmptyWidget(&NO_DATA),
             None,
@@ -179,7 +179,7 @@ impl Ingredient for EmptyStateLoading {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_centered(
             EmptyWidget(&LOADING),
             None,
@@ -222,7 +222,7 @@ impl Ingredient for EmptyStateError {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_centered(
             EmptyWidget(&ERROR),
             None,

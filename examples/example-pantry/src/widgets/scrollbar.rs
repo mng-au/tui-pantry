@@ -72,7 +72,7 @@ impl Ingredient for ScrollbarVertical {
         true
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let block = Block::bordered()
             .title(" Scrollable Text ")
             .title_style(Style::default().fg(MOCHA.text))
@@ -143,7 +143,7 @@ impl Ingredient for ScrollbarHorizontal {
         true
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let wide_line = "← This line is very long and demonstrates horizontal scrolling. \
             It keeps going and going to show how the scrollbar tracks the horizontal position. \
             Almost there… and done! →";

@@ -46,7 +46,7 @@ impl Ingredient for ParagraphWrapped {
         "ratatui::widgets::Paragraph"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         RatatuiParagraph::new(SAMPLE_TEXT)
             .style(Style::default().fg(MOCHA.text).bg(MOCHA.surface))
             .block(
@@ -79,7 +79,7 @@ impl Ingredient for ParagraphAligned {
         "ratatui::widgets::Paragraph"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         RatatuiParagraph::new(SAMPLE_TEXT)
             .style(Style::default().fg(MOCHA.text).bg(MOCHA.surface))
             .block(
@@ -113,7 +113,7 @@ impl Ingredient for ParagraphStyled {
         "ratatui::widgets::Paragraph"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let lines = vec![
             Line::from(vec![
                 Span::styled(

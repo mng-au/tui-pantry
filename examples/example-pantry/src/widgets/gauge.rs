@@ -101,7 +101,7 @@ impl Ingredient for GaugeLow {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_gauge("CPU", 0.34, area, buf);
     }
 }
@@ -131,7 +131,7 @@ impl Ingredient for GaugeMedium {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_gauge("CPU", 0.74, area, buf);
     }
 }
@@ -161,7 +161,7 @@ impl Ingredient for GaugeHigh {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_gauge("CPU", 0.92, area, buf);
     }
 }
@@ -191,7 +191,7 @@ impl Ingredient for GaugeStacked {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let gauges: &[(&str, f64)] = &[("CPU", 0.34), ("Memory", 0.71), ("Disk", 0.88)];
 
         let constraints: Vec<Constraint> = gauges.iter().map(|_| Constraint::Length(3)).collect();

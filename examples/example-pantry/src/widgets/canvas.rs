@@ -39,7 +39,7 @@ impl Ingredient for CanvasShapes {
         "ratatui::widgets::canvas::Canvas"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         RatatuiCanvas::default()
             .block(
                 Block::bordered()
@@ -103,7 +103,7 @@ impl Ingredient for CanvasMap {
         "ratatui::widgets::canvas::Canvas"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         RatatuiCanvas::default()
             .block(
                 Block::bordered()

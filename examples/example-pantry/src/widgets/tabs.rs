@@ -54,7 +54,7 @@ impl Ingredient for TabsDefault {
         "ratatui::widgets::Tabs"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_tabs(&["Overview", "Details", "Settings"], 0, area, buf);
     }
 }
@@ -78,7 +78,7 @@ impl Ingredient for TabsMany {
         "ratatui::widgets::Tabs"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_tabs(
             &[
                 "Home",
@@ -115,7 +115,7 @@ impl Ingredient for TabsSingle {
         "ratatui::widgets::Tabs"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_tabs(&["Dashboard"], 0, area, buf);
     }
 }

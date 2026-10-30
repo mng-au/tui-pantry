@@ -75,7 +75,7 @@ impl Ingredient for MetricPanelSteady {
         "example_pantry::panes::metric_panel"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_centered(
             MetricWidget(&STEADY),
             Some(Constraint::Max(40)),
@@ -113,7 +113,7 @@ impl Ingredient for MetricPanelSpike {
         "example_pantry::panes::metric_panel"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         render_centered(
             MetricWidget(&SPIKE),
             Some(Constraint::Max(40)),

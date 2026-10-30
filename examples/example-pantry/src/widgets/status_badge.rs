@@ -81,7 +81,7 @@ impl Ingredient for StatusBadgeInline {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let rows = Layout::vertical(vec![Constraint::Length(1); STATUSES.len()]).split(area);
 
         for (status, row) in STATUSES.iter().zip(rows.iter()) {
@@ -119,7 +119,7 @@ impl Ingredient for StatusBadgePill {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let rows = Layout::vertical(vec![Constraint::Length(2); STATUSES.len()]).split(area);
 
         for (status, row) in STATUSES.iter().zip(rows.iter()) {

@@ -99,7 +99,7 @@ impl Ingredient for ExplorerDefault {
         true
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let [map_col, log_col] =
             Layout::horizontal([Constraint::Percentage(55), Constraint::Percentage(45)])
                 .areas(area);

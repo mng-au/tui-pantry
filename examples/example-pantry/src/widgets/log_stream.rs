@@ -218,7 +218,7 @@ impl Ingredient for LogStreamDefault {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let visible = area.height as usize;
         let entries = &ENTRIES[self.scroll..ENTRIES.len().min(self.scroll + visible)];
         for (i, entry) in entries.iter().enumerate() {
@@ -279,7 +279,7 @@ impl Ingredient for LogStreamQuiet {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         for (i, entry) in QUIET_ENTRIES.iter().enumerate() {
             let y = area.y + i as u16;
             if y >= area.bottom() {

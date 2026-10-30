@@ -168,7 +168,7 @@ impl Ingredient for AnalyticsDefault {
         "example_pantry::views::analytics"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let [gauge_row, chart_row] =
             Layout::vertical([Constraint::Length(3), Constraint::Min(10)]).areas(area);
 

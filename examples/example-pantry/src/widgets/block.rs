@@ -94,7 +94,7 @@ impl Ingredient for BlockPlain {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         RatatuiBlock::default()
             .borders(Borders::ALL)
             .border_style(border_style())
@@ -128,7 +128,7 @@ impl Ingredient for BlockRounded {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         RatatuiBlock::bordered()
             .border_style(border_style())
             .style(base_style())
@@ -161,7 +161,7 @@ impl Ingredient for BlockDouble {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         RatatuiBlock::default()
             .borders(Borders::ALL)
             .border_type(ratatui::widgets::BorderType::Double)
@@ -196,7 +196,7 @@ impl Ingredient for BlockTitled {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         RatatuiBlock::bordered()
             .title(" Panel Title ")
             .title_style(Style::default().fg(MOCHA.text))

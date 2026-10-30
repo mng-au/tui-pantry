@@ -250,7 +250,7 @@ impl Ingredient for DashboardDefault {
         true
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         // Top row: gauges
         // Middle row: barchart | sparklines
         // Bottom: services table
@@ -312,7 +312,7 @@ impl Ingredient for DashboardEmpty {
         "example_pantry::views::dashboard"
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let [gauge_row, chart_row, table_row] = Layout::vertical([
             Constraint::Length(3),
             Constraint::Length(10),

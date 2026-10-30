@@ -155,7 +155,7 @@ impl Ingredient for TableDefault {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let header = Row::new(["Name", "Kind", "Version", "Status"])
             .style(Style::default().fg(MOCHA.text).add_modifier(Modifier::BOLD))
             .bottom_margin(1);
@@ -246,7 +246,7 @@ impl Ingredient for TableEmpty {
         PROPS
     }
 
-    fn render(&self, area: Rect, buf: &mut Buffer) {
+    fn render(&mut self, area: Rect, buf: &mut Buffer) {
         let header = Row::new(["Name", "Kind", "Version", "Status"])
             .style(Style::default().fg(MOCHA.text).add_modifier(Modifier::BOLD))
             .bottom_margin(1);
