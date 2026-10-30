@@ -227,6 +227,15 @@ impl NavTree {
         self.cursor = index.min(max);
     }
 
+    /// Move the cursor to a variant selected by widget group and variant name.
+    ///
+    /// `widget` matches a `group()` case-insensitively; `variant` matches a
+    /// `name()` case-insensitively and is optional. The named widget is
+    /// expanded so its variant is visible. Behaviour on a miss:
+    ///
+    /// - unknown widget, or widget with no variants → leave cursor unchanged
+    ///   (the tab's first variant, set at build time)
+    /// - `variant` absent or unmatched → first variant of the named widget
     pub fn select_by_group_and_variant(
         &mut self,
         widget: &str,
@@ -639,6 +648,60 @@ mod tests {
         let mut nav = NavTree::build(&items, "Widgets");
         nav.cursor = 4; // Chart > "Line" (ingredient_idx=2)
         assert_eq!(nav.selected_ingredient(), Some(2));
+    }
+
+    // -- widget / variant selection ----------------------------------------
+
+    #[test]
+    fn select_known_variant() {
+        let items = sample_ingredients(); // Table(0,1), Chart(2,3,4)
+        let mut nav = NavTree::build(&items, "Widgets");
+        nav.select_by_group_and_variant("chart", Some("Bar"), &items);
+        assert_eq!(nav.selected_ingredient(), Some(3));
+    }
+
+    #[test]
+    fn select_is_case_insensitive() {
+        let items = sample_ingredients();
+        let mut nav = NavTree::build(&items, "Widgets");
+        nav.select_by_group_and_variant("CHART", Some("bAr"), &items);
+        assert_eq!(nav.selected_ingredient(), Some(3));
+    }
+
+    #[test]
+    fn select_without_variant_takes_first_of_widget() {
+        let items = sample_ingredients();
+        let mut nav = NavTree::build(&items, "Widgets");
+        nav.select_by_group_and_variant("chart", None, &items);
+        assert_eq!(nav.selected_ingredient(), Some(2));
+    }
+
+    #[test]
+    fn select_unknown_variant_falls_back_to_first_of_widget() {
+        let items = sample_ingredients();
+        let mut nav = NavTree::build(&items, "Widgets");
+        nav.select_by_group_and_variant("chart", Some("missing"), &items);
+        assert_eq!(nav.selected_ingredient(), Some(2));
+    }
+
+    #[test]
+    fn select_unknown_widget_leaves_default() {
+        let items = sample_ingredients();
+        let mut nav = NavTree::build(&items, "Widgets");
+        // Default cursor is Table>Default (ingredient 0).
+        assert_eq!(nav.selected_ingredient(), Some(0));
+        nav.select_by_group_and_variant("nope", None, &items);
+        assert_eq!(nav.selected_ingredient(), Some(0));
+    }
+
+    #[test]
+    fn select_collapsed_widget_expands_it() {
+        let items = sample_ingredients();
+        let mut nav = NavTree::build(&items, "Widgets");
+        nav.widget_expanded[0] = false; // Table collapsed
+        nav.select_by_group_and_variant("table", None, &items);
+        assert!(nav.widget_expanded[0]);
+        assert_eq!(nav.selected_ingredient(), Some(0));
     }
 
     // -- expand / collapse ----------------------------------------------------

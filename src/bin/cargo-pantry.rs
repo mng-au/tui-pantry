@@ -8,6 +8,10 @@ const SCAFFOLD_MAIN: &str = include_str!("../../scaffold/main.rs");
 const PANTRY_TOML: &str = "\
 [config]
 theme = \"dark\"
+# Optional: choose where the harness opens on startup.
+# start_tab = \"Views\"      # Widgets | Panes | Views | Styles (default: Widgets)
+# start_widget = \"button\"   # Ingredient::group() in the opened tab
+# start_variant = \"default\" # Ingredient::name() within start_widget
 
 [ingredients]
 source = \"my_crate\"  # replace with your crate name

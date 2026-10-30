@@ -443,3 +443,172 @@ impl App {
         self.nav_mut().toggle_or_enter();
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ratatui::{buffer::Buffer, layout::Rect};
+
+    /// Minimal ingredient for exercising initial-state seeding.
+    struct Stub {
+        tab: &'static str,
+        group: &'static str,
+        name: &'static str,
+    }
+
+    impl Stub {
+        fn new(group: &'static str, name: &'static str) -> Self {
+            Self { tab: "Widgets", group, name }
+        }
+        fn tab(mut self, tab: &'static str) -> Self {
+            self.tab = tab;
+            self
+        }
+    }
+
+    impl Ingredient for Stub {
+        fn tab(&self) -> &str {
+            self.tab
+        }
+        fn group(&self) -> &str {
+            self.group
+        }
+        fn name(&self) -> &str {
+            self.name
+        }
+        fn source(&self) -> &str {
+            ""
+        }
+        fn render(&mut self, _area: Rect, _buf: &mut Buffer) {}
+    }
+
+    fn boxed(s: Stub) -> Box<dyn Ingredient> {
+        Box::new(s)
+    }
+
+    /// Widgets tab: `dashboard` (summary, overview) + `kpi` (default).
+    /// Views tab: `dashboard` (summary) so combined-state tests can target it.
+    fn sample_ingredients() -> Vec<Box<dyn Ingredient>> {
+        vec![
+            boxed(Stub::new("dashboard", "summary")),
+            boxed(Stub::new("dashboard", "overview")),
+            boxed(Stub::new("kpi", "default")),
+            boxed(Stub::new("dashboard", "summary").tab("Views")),
+        ]
+    }
+
+    fn app_with(initial_view: InitialView) -> App {
+        App::new(
+            sample_ingredients(),
+            ThemePair::default(),
+            PreviewBackgrounds::default(),
+            initial_view,
+        )
+    }
+
+    // -- 2.1: start_tab resolves active_tab --------------------------------
+
+    #[test]
+    fn start_tab_known_opens_that_tab() {
+        let app = app_with(InitialView {
+            start_tab: Some("Views".into()),
+            ..Default::default()
+        });
+        assert_eq!(app.active_tab, 2);
+    }
+
+    #[test]
+    fn start_tab_case_insensitive() {
+        let app = app_with(InitialView {
+            start_tab: Some("sTyLeS".into()),
+            ..Default::default()
+        });
+        assert_eq!(app.active_tab, 3);
+    }
+
+    #[test]
+    fn start_tab_unknown_falls_back_to_default() {
+        let app = app_with(InitialView {
+            start_tab: Some("Nonexistent".into()),
+            ..Default::default()
+        });
+        assert_eq!(app.active_tab, 0);
+    }
+
+    #[test]
+    fn no_start_tab_keeps_default() {
+        let app = app_with(InitialView::default());
+        assert_eq!(app.active_tab, 0);
+    }
+
+    // -- 2.2: start_widget / start_variant resolve the nav cursor ----------
+
+    #[test]
+    fn start_widget_opens_first_variant() {
+        let app = app_with(InitialView {
+            start_widget: Some("dashboard".into()),
+            ..Default::default()
+        });
+        // dashboard > summary is ingredient 0.
+        assert_eq!(app.nav().selected_ingredient(), Some(0));
+    }
+
+    #[test]
+    fn start_widget_with_known_variant() {
+        let app = app_with(InitialView {
+            start_widget: Some("dashboard".into()),
+            start_variant: Some("overview".into()),
+            ..Default::default()
+        });
+        // dashboard > overview is ingredient 1.
+        assert_eq!(app.nav().selected_ingredient(), Some(1));
+    }
+
+    #[test]
+    fn start_widget_unknown_falls_back_to_first_in_tab() {
+        let app = app_with(InitialView {
+            start_widget: Some("does_not_exist".into()),
+            ..Default::default()
+        });
+        // First available variant in Widgets tab is dashboard > summary (0).
+        assert_eq!(app.nav().selected_ingredient(), Some(0));
+    }
+
+    #[test]
+    fn start_variant_unknown_falls_back_to_first_of_widget() {
+        let app = app_with(InitialView {
+            start_widget: Some("dashboard".into()),
+            start_variant: Some("missing".into()),
+            ..Default::default()
+        });
+        assert_eq!(app.nav().selected_ingredient(), Some(0));
+    }
+
+    // -- 3.1: combined initial state ---------------------------------------
+
+    #[test]
+    fn all_keys_applied_together() {
+        let app = app_with(InitialView {
+            start_tab: Some("Views".into()),
+            start_widget: Some("dashboard".into()),
+            start_variant: Some("summary".into()),
+        });
+        // Opens on Views (index 2) and selects dashboard > summary there.
+        assert_eq!(app.active_tab, 2);
+        // Views tab has a single ingredient (dashboard > summary, index 3).
+        assert_eq!(app.nav().selected_ingredient(), Some(3));
+    }
+
+    #[test]
+    fn combined_widget_in_wrong_tab_falls_back_within_opened_tab() {
+        // dashboard exists in Widgets but we open Views; widget resolves
+        // against the opened (Views) tab and falls back to its first variant.
+        let app = app_with(InitialView {
+            start_tab: Some("Views".into()),
+            start_widget: Some("dashboard".into()),
+            ..Default::default()
+        });
+        assert_eq!(app.active_tab, 2);
+        assert_eq!(app.nav().selected_ingredient(), Some(3));
+    }
+}
